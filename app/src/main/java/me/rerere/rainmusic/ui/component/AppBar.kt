@@ -1,6 +1,8 @@
 package me.rerere.rainmusic.ui.component
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
@@ -10,6 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import me.rerere.rainmusic.ui.local.LocalNavController
 
 /**
@@ -19,7 +23,10 @@ import me.rerere.rainmusic.ui.local.LocalNavController
 fun RainTopBar(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = WindowInsets.statusBars.asPaddingValues(),
+    contentPadding: PaddingValues = rememberInsetsPaddingValues(
+        insets = LocalWindowInsets.current.statusBars,
+        applyBottom = false
+    ),
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     colors: TopAppBarColors = TopAppBarDefaults.smallTopAppBarColors(),
@@ -80,7 +87,9 @@ fun RainBottomNavigation(
         ) {
             NavigationBar(
                 modifier = Modifier.padding(
-                    WindowInsets.navigationBars.asPaddingValues()
+                    rememberInsetsPaddingValues(
+                        insets = LocalWindowInsets.current.navigationBars
+                    )
                 )
             ) {
                 content()

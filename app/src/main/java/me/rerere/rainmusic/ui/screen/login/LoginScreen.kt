@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import dev.burnoo.compose.rememberpreference.rememberStringPreference
 import me.rerere.rainmusic.R
 import me.rerere.rainmusic.RouteActivity
@@ -45,8 +46,8 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize()
-                .navigationBarsPadding(),
+                .navigationBarsWithImePadding()
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Body(

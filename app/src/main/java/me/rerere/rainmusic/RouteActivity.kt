@@ -21,6 +21,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -82,105 +83,107 @@ class RouteActivity : ComponentActivity() {
 
         setContent {
             RainMusicTheme {
-                val navController = rememberAnimatedNavController()
+                ProvideWindowInsets {
+                    val navController = rememberAnimatedNavController()
 
-                CompositionLocalProvider(
-                    // 全局提供NavController
-                    LocalNavController provides navController,
-                    // 全局提供用户账号信息
-                    LocalUserData provides userData,
-                    // Coil
-                    LocalImageLoader provides ImageLoader.Builder(this)
-                        .okHttpClient(okHttpClient)
-                        .build()
-                ) {
-                    AnimatedNavHost(
-                        modifier = Modifier.fillMaxSize(),
-                        navController = navController,
-                        startDestination = "index",
-                        enterTransition = defaultEnterTransition,
-                        exitTransition = {
-                            if (targetState.destination.route == Screen.Player.route) {
-                                fadeOut()
-                            } else {
-                                slideOutHorizontally(
-                                    targetOffsetX = {
-                                        -it
-                                    },
-                                    animationSpec = tween()
-                                ) + fadeOut(
-                                    animationSpec = tween()
-                                )
-                            }
-                        },
-                        popEnterTransition = {
-                            if (initialState.destination.route == Screen.Player.route) {
-                                fadeIn()
-                            } else {
-                                slideInHorizontally(
-                                    initialOffsetX = {
-                                        -it
-                                    },
-                                    animationSpec = tween()
-                                )
-                            }
-                        },
-                        popExitTransition = defaultPopExitTransition
+                    CompositionLocalProvider(
+                        // 全局提供NavController
+                        LocalNavController provides navController,
+                        // 全局提供用户账号信息
+                        LocalUserData provides userData,
+                        // Coil
+                        LocalImageLoader provides ImageLoader.Builder(this)
+                            .okHttpClient(okHttpClient)
+                            .build()
                     ) {
-                        composable(Screen.Login.route) {
-                            LoginScreen()
-                        }
-
-                        composable(Screen.Index.route) {
-                            IndexScreen()
-                        }
-
-                        composable(Screen.Search.route) {
-                            SearchScreen()
-                        }
-
-                        composable(
-                            route = "${Screen.Playlist.route}/{id}",
-                            arguments = listOf(
-                                navArgument("id") {
-                                    type = NavType.LongType
+                        AnimatedNavHost(
+                            modifier = Modifier.fillMaxSize(),
+                            navController = navController,
+                            startDestination = "index",
+                            enterTransition = defaultEnterTransition,
+                            exitTransition = {
+                                if (targetState.destination.route == Screen.Player.route) {
+                                    fadeOut()
+                                } else {
+                                    slideOutHorizontally(
+                                        targetOffsetX = {
+                                            -it
+                                        },
+                                        animationSpec = tween()
+                                    ) + fadeOut(
+                                        animationSpec = tween()
+                                    )
                                 }
-                            )
-                        ) {
-                            PlaylistScreen(id = it.arguments!!.getLong("id"))
-                        }
-
-                        composable(
-                            route = Screen.Player.route,
-                            enterTransition = {
-                                slideInVertically(
-                                    initialOffsetY = {
-                                        it
-                                    },
-                                    animationSpec = tween()
-                                ) + fadeIn()
                             },
-                            popExitTransition = {
-                                slideOutVertically(
-                                    targetOffsetY = {
-                                        it
-                                    },
-                                    animationSpec = tween()
-                                ) + fadeOut()
-                            }
+                            popEnterTransition = {
+                                if (initialState.destination.route == Screen.Player.route) {
+                                    fadeIn()
+                                } else {
+                                    slideInHorizontally(
+                                        initialOffsetX = {
+                                            -it
+                                        },
+                                        animationSpec = tween()
+                                    )
+                                }
+                            },
+                            popExitTransition = defaultPopExitTransition
                         ) {
-                            PlayerScreen()
-                        }
+                            composable(Screen.Login.route) {
+                                LoginScreen()
+                            }
 
-                        composable(Screen.DailySong.route) {
-                            DailySongScreen()
-                        }
+                            composable(Screen.Index.route) {
+                                IndexScreen()
+                            }
 
-                        // 测试各种API，Compose组件的Screen
-                        // 不在release版本中提供这个screen
-                        if (BuildConfig.DEBUG) {
-                            composable("test") {
-                                TestScreen()
+                            composable(Screen.Search.route) {
+                                SearchScreen()
+                            }
+
+                            composable(
+                                route = "${Screen.Playlist.route}/{id}",
+                                arguments = listOf(
+                                    navArgument("id") {
+                                        type = NavType.LongType
+                                    }
+                                )
+                            ) {
+                                PlaylistScreen(id = it.arguments!!.getLong("id"))
+                            }
+
+                            composable(
+                                route = Screen.Player.route,
+                                enterTransition = {
+                                    slideInVertically(
+                                        initialOffsetY = {
+                                            it
+                                        },
+                                        animationSpec = tween()
+                                    ) + fadeIn()
+                                },
+                                popExitTransition = {
+                                    slideOutVertically(
+                                        targetOffsetY = {
+                                            it
+                                        },
+                                        animationSpec = tween()
+                                    ) + fadeOut()
+                                }
+                            ) {
+                                PlayerScreen()
+                            }
+
+                            composable(Screen.DailySong.route) {
+                                DailySongScreen()
+                            }
+
+                            // 测试各种API，Compose组件的Screen
+                            // 不在release版本中提供这个screen
+                            if (BuildConfig.DEBUG) {
+                                composable("test") {
+                                    TestScreen()
+                                }
                             }
                         }
                     }
@@ -191,7 +194,7 @@ class RouteActivity : ComponentActivity() {
         // 禁止强制深色模式
         (window.decorView.findViewById<ViewGroup>(android.R.id.content)
             .getChildAt(0) as? ComposeView)?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 it.isForceDarkAllowed = false
             }
         }
