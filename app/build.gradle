@@ -1,0 +1,124 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "me.rerere.rainmusic"
+        minSdk 24
+        targetSdk 31
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+        viewBinding true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    lintOptions {
+        disable("UnsafeOptInUsageError")
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.activity:activity-compose:1.4.0'
+
+    // media3
+    implementation "androidx.media3:media3-session:1.0.0-alpha03"
+    implementation "androidx.media3:media3-common:1.0.0-alpha03"
+    implementation "androidx.media3:media3-exoplayer:1.0.0-alpha03"
+    implementation "androidx.media3:media3-ui:1.0.0-alpha03"
+
+    // splash screen
+    implementation "androidx.core:core-splashscreen:1.0.0-beta02"
+
+    // 持久化State
+    implementation 'dev.burnoo:compose-remember-preference:0.3.4'
+
+    // compose library
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha10"
+
+    // hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+
+    // Paging 3
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-compose:1.0.0-alpha14"
+
+    // Navigation for JetpackCompose
+    implementation "androidx.navigation:navigation-compose:2.5.0-beta01"
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:1.4.0")
+
+    // Material Motion 动画
+    implementation "com.github.fornewid.material-motion-compose:core:0.9.0-alpha04"
+
+    // accompanist
+    implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
+
+    // OkHttp & Retrofit
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.4'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
+
+    // 加密库
+    def kryptoVersion = "2.4.8"
+    implementation("com.soywiz.korlibs.krypto:krypto-android:$kryptoVersion")
+
+    // test
+    implementation "androidx.test.ext:junit:1.1.3"
+    implementation "androidx.test.ext:junit-ktx:1.1.3"
+    implementation "androidx.compose.ui:ui-test-junit4:1.1.1"
+}
+
+kapt {
+    correctErrorTypes true
+}
