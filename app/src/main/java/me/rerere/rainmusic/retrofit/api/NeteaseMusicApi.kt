@@ -1,6 +1,5 @@
 package me.rerere.rainmusic.retrofit.api
 
-import com.google.gson.JsonObject
 import me.rerere.rainmusic.retrofit.api.model.*
 import retrofit2.http.*
 
@@ -74,13 +73,4 @@ interface NeteaseMusicApi {
         @Header("like") like: Boolean,
         @FieldMap body: Map<String, String>
     ): LikeResult
-
-    /**
-     * 操作歌单
-     */
-    @POST("/api/playlist/manipulate/tracks")
-    @FormUrlEncoded
-    suspend fun manipulatePlaylist(
-        @FieldMap body: Map<String, String>
-    ): JsonObject
 }

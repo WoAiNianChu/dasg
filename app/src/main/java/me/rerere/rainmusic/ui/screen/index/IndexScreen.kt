@@ -3,15 +3,15 @@ package me.rerere.rainmusic.ui.screen.index
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -52,55 +50,47 @@ fun IndexScreen(
     val navController = LocalNavController.current
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val pagerState = rememberPagerState()
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    NavigationDrawer(
-        drawerContent = {
-            DrawerContent(indexViewModel)
+    Scaffold(
+        // modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            IndexTopBar(
+                indexViewModel = indexViewModel,
+                scrollBehavior = scrollBehavior
+            )
         },
-        drawerState = drawerState
-    ) {
-        Scaffold(
-            topBar = {
-                IndexTopBar(
-                    indexViewModel = indexViewModel,
-                    scrollBehavior = scrollBehavior,
-                    drawerState = drawerState
-                )
-            },
-            bottomBar = {
-                BottomNavigationBar(
-                    pagerState = pagerState
-                )
-            },
-            floatingActionButton = {
-                FloatingActionButton(onClick = {
-                    Screen.Player.navigate(navController)
-                }) {
-                    Icon(Icons.Rounded.QueueMusic, null)
-                }
+        bottomBar = {
+            BottomNavigationBar(
+                pagerState = pagerState
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                Screen.Player.navigate(navController)
+            }) {
+                Icon(Icons.Rounded.QueueMusic, null)
             }
-        ) {
-            Column {
-                NetworkBanner(indexViewModel)
+        }
+    ) {
+        Column {
+            NetworkBanner(indexViewModel)
 
-                HorizontalPager(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it),
-                    count = 3,
-                    state = pagerState,
-                ) { page ->
-                    when (page) {
-                        0 -> {
-                            IndexPage(indexViewModel)
-                        }
-                        1 -> {
-                            DiscoverPage(indexViewModel)
-                        }
-                        2 -> {
-                            RequireLoginVisible {
-                                LibraryPage(indexViewModel)
-                            }
+            HorizontalPager(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                count = 3,
+                state = pagerState,
+            ) { page ->
+                when (page) {
+                    0 -> {
+                        IndexPage(indexViewModel)
+                    }
+                    1 -> {
+                        DiscoverPage(indexViewModel)
+                    }
+                    2 -> {
+                        RequireLoginVisible {
+                            LibraryPage(indexViewModel)
                         }
                     }
                 }
@@ -131,11 +121,11 @@ private fun NetworkBanner(
 @Composable
 private fun IndexTopBar(
     indexViewModel: IndexViewModel,
-    scrollBehavior: TopAppBarScrollBehavior,
-    drawerState: DrawerState
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
+    // val accountDetail by indexViewModel.accountDetail.collectAsState()
     val accountData = LocalUserData.current
     RainTopBar(
         navigationIcon = {
@@ -146,9 +136,8 @@ private fun IndexTopBar(
                     R.drawable.netease_music
             )
             IconButton(onClick = {
-                scope.launch {
-                    drawerState.open()
-                }
+                // TODO
+                navController.navigate("login")
             }) {
                 Icon(
                     modifier = Modifier
@@ -185,16 +174,14 @@ private fun IndexTopBar(
             }
 
             Icon(
-                modifier = Modifier
-                    .combinedClickable(
-                        onClick = {
-                            navController.navigate(Screen.Search.route)
-                        },
-                        onLongClick = {
-                            showDebugButtons = !showDebugButtons
-                        }
-                    )
-                    .padding(8.dp),
+                modifier = Modifier.combinedClickable(
+                    onClick = {
+                        navController.navigate(Screen.Search.route)
+                    },
+                    onLongClick = {
+                        showDebugButtons = !showDebugButtons
+                    }
+                ).padding(8.dp),
                 imageVector = Icons.Rounded.Search,
                 contentDescription = "Search"
             )
@@ -265,23 +252,15 @@ private fun BottomNavigationBar(
 }
 
 @Composable
-private fun DrawerContent(indexViewModel: IndexViewModel) {
-    val userData = LocalUserData.current
-    Column(
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        // TODO: 完善drawer
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = rememberImagePainter(data = userData.avatarUrl),
-                contentDescription = null,
-                modifier = Modifier.clip(CircleShape)
-            )
-        }
+private fun DrawerContent() {
+    Text(text = "TODO...")
+}
+
+// 推荐歌单
+@Composable
+private fun RecommendPlaylist() {
+    Column {
+        Text(text = "推荐歌单")
+
     }
 }
